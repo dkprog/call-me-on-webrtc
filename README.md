@@ -1,4 +1,4 @@
-# call-me-on-webrtc
+# Call me on WebRTC
 
 A simple web app for calling and talking to another participant using WebRTC, by video and/or voice.
 
