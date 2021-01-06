@@ -11,10 +11,12 @@ import {
   IonAlert,
 } from "@ionic/react";
 import { videocam, mic } from "ionicons/icons";
+import Header from "../components/Header";
 
 function HomePage() {
   return (
     <IonPage>
+      <Header />
       <IonContent>
         <div className="container">
           <IonText>

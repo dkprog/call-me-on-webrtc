@@ -7,3 +7,16 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
+
+.video.remote {
+  width: 100%;
+  height: 100%;
+}
+
+.video.local {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  background-color: #c0c0c0;
+  bottom: 0px;
+}

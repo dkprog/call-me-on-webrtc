@@ -11,12 +11,14 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 import "./theme/global.css";
 
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
+import CallSessionPage from "./pages/CallSessionPage";
 
 function App() {
   return (
     <IonApp>
-      <HomePage />
+      {/* <HomePage /> */}
+      <CallSessionPage />
     </IonApp>
   );
 }
