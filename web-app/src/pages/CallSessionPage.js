@@ -6,9 +6,9 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-} from "@ionic/react";
-import Header from "../components/Header";
-import { videocam, mic, exit } from "ionicons/icons";
+} from '@ionic/react'
+import Header from '../components/Header'
+import { videocam, mic, exit } from 'ionicons/icons'
 
 function CallSessionPage() {
   return (
@@ -36,7 +36,7 @@ function CallSessionPage() {
         </IonToolbar>
       </IonFooter>
     </IonPage>
-  );
+  )
 }
 
-export default CallSessionPage;
+export default CallSessionPage

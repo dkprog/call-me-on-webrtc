@@ -9,9 +9,9 @@ import {
   IonText,
   IonIcon,
   IonAlert,
-} from "@ionic/react";
-import { videocam, mic } from "ionicons/icons";
-import Header from "../components/Header";
+} from '@ionic/react'
+import { videocam, mic } from 'ionicons/icons'
+import Header from '../components/Header'
 
 function HomePage() {
   return (
@@ -34,7 +34,7 @@ function HomePage() {
             </IonItem>
             <div
               className="ion-padding-top ion-justify-content-center"
-              style={{ display: "flex" }}
+              style={{ display: 'flex' }}
             >
               <IonButton>
                 <IonIcon icon={videocam} />
@@ -47,17 +47,17 @@ function HomePage() {
         </div>
         <IonAlert
           isOpen
-          header={"Incoming call"}
+          header={'Incoming call'}
           message="There is a incoming call from <em>partner-102</em>"
           buttons={[
-            { text: "Accept with video", role: "video" },
-            { text: "Accept with audio only", role: "audio" },
-            { text: "Decline it", role: "decline" },
+            { text: 'Accept with video', role: 'video' },
+            { text: 'Accept with audio only', role: 'audio' },
+            { text: 'Decline it', role: 'decline' },
           ]}
         />
       </IonContent>
     </IonPage>
-  );
+  )
 }
 
-export default HomePage;
+export default HomePage
