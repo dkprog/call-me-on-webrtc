@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux'
+import { selectIsStageUninitialized } from '../features/webrtc/webrtcSlice'
 import {
   IonButton,
   IonContent,
@@ -9,11 +11,15 @@ import {
   IonText,
   IonIcon,
   IonAlert,
+  IonSpinner,
 } from '@ionic/react'
 import { videocam, mic } from 'ionicons/icons'
 import Header from '../components/Header'
 
 function HomePage() {
+  const isStageUninitialized = useSelector((state) =>
+    selectIsStageUninitialized(state)
+  )
   return (
     <IonPage>
       <Header />
@@ -25,8 +31,17 @@ function HomePage() {
           <IonList>
             <IonItem>
               <IonLabel position="fixed">Your ID:</IonLabel>
-              <IonInput type="text" readonly value="sample-id-101" />
-              <IonButton>Copy</IonButton>
+              <IonInput
+                type="text"
+                readonly
+                value="sample-id-101"
+                disabled={isStageUninitialized}
+              />
+              {isStageUninitialized ? (
+                <IonSpinner />
+              ) : (
+                <IonButton>Copy</IonButton>
+              )}
             </IonItem>
             <IonItem>
               <IonLabel position="fixed">Partner ID:</IonLabel>
@@ -46,7 +61,7 @@ function HomePage() {
           </IonList>
         </div>
         <IonAlert
-          isOpen
+          isOpen={false}
           header={'Incoming call'}
           message="There is a incoming call from <em>partner-102</em>"
           buttons={[
