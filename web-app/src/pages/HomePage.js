@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux'
-import { selectIsStageUninitialized } from '../features/webrtc/webrtcSlice'
+import {
+  selectIsStageUninitialized,
+  selectIdentifier,
+} from '../features/webrtc/webrtcSlice'
 import {
   IonButton,
   IonContent,
@@ -20,6 +23,7 @@ function HomePage() {
   const isStageUninitialized = useSelector((state) =>
     selectIsStageUninitialized(state)
   )
+  const identifier = useSelector((state) => selectIdentifier(state))
   return (
     <IonPage>
       <Header />
@@ -34,7 +38,7 @@ function HomePage() {
               <IonInput
                 type="text"
                 readonly
-                value="sample-id-101"
+                value={identifier || 'Loading...'}
                 disabled={isStageUninitialized}
               />
               {isStageUninitialized ? (

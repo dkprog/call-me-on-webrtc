@@ -21,12 +21,18 @@ export const webrtcSlice = createSlice({
       state.stage = Stages.Idle
       state.identifier = action.payload
     },
+    reset(state) {
+      state.stage = Stages.Uninitialized
+      state.identifier = null
+    },
   },
 })
 
-export const { initialized } = webrtcSlice.actions
+export const { initialized, reset } = webrtcSlice.actions
 
 export const selectIsStageUninitialized = (state) =>
   state.webrtc.stage === Stages.Uninitialized
+
+export const selectIdentifier = (state) => state.webrtc.identifier
 
 export default webrtcSlice.reducer
