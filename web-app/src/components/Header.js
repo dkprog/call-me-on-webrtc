@@ -3,7 +3,7 @@ import { IonHeader, IonTitle, IonToolbar } from '@ionic/react'
 function Header() {
   return (
     <IonHeader>
-      <IonToolbar color="primary">
+      <IonToolbar color='primary'>
         <IonTitle>Call me on WebRTC</IonTitle>
       </IonToolbar>
     </IonHeader>

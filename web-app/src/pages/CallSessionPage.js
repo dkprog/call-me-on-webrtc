@@ -15,21 +15,21 @@ function CallSessionPage() {
     <IonPage>
       <Header />
       <IonContent>
-        <div className="container">
-          <video playsInline autoPlay className="video remote" />
-          <video playsInline autoPlay muted className="video local" />
+        <div className='container'>
+          <video playsInline autoPlay className='video remote' />
+          <video playsInline autoPlay muted className='video local' />
         </div>
       </IonContent>
       <IonFooter>
         <IonToolbar>
-          <IonButtons slot="secondary">
+          <IonButtons slot='secondary'>
             <IonButton>
               <IonIcon icon={videocam} />
             </IonButton>
             <IonButton>
               <IonIcon icon={mic} />
             </IonButton>
-            <IonButton color="danger">
+            <IonButton color='danger'>
               <IonIcon icon={exit} />
             </IonButton>
           </IonButtons>

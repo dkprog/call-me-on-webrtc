@@ -28,15 +28,15 @@ function HomePage() {
     <IonPage>
       <Header />
       <IonContent>
-        <div className="container">
+        <div className='container'>
           <IonText>
             <h2>Call a partner</h2>
           </IonText>
           <IonList>
             <IonItem>
-              <IonLabel position="fixed">Your ID:</IonLabel>
+              <IonLabel position='fixed'>Your ID:</IonLabel>
               <IonInput
-                type="text"
+                type='text'
                 readonly
                 value={identifier || 'Loading...'}
                 disabled={isStageUninitialized}
@@ -48,11 +48,11 @@ function HomePage() {
               )}
             </IonItem>
             <IonItem>
-              <IonLabel position="fixed">Partner ID:</IonLabel>
-              <IonInput type="text" placeholder="Type the partner ID" />
+              <IonLabel position='fixed'>Partner ID:</IonLabel>
+              <IonInput type='text' placeholder='Type the partner ID' />
             </IonItem>
             <div
-              className="ion-padding-top ion-justify-content-center"
+              className='ion-padding-top ion-justify-content-center'
               style={{ display: 'flex' }}
             >
               <IonButton>
@@ -67,7 +67,7 @@ function HomePage() {
         <IonAlert
           isOpen={false}
           header={'Incoming call'}
-          message="There is a incoming call from <em>partner-102</em>"
+          message='There is a incoming call from <em>partner-102</em>'
           buttons={[
             { text: 'Accept with video', role: 'video' },
             { text: 'Accept with audio only', role: 'audio' },
