@@ -14,25 +14,59 @@ export const webrtcSlice = createSlice({
   name: 'webrtc',
   initialState: {
     stage: Stages.Uninitialized,
-    identifier: null,
+    localIdentifier: null,
+    remoteIdentifier: null,
+    isVideoEnabled: false,
+    isAudioEnabled: false,
+    errorMessage: null,
   },
   reducers: {
     initialized(state, action) {
       state.stage = Stages.Idle
-      state.identifier = action.payload
+      state.localIdentifier = action.payload.localIdentifier
+    },
+    callingStarted(state, action) {
+      state.stage = Stages.Calling
+      state.remoteIdentifier = action.payload.remoteIdentifier
+      state.isVideoEnabled = action.payload.isVideoEnabled
+      state.isAudioEnabled = true
+    },
+    failed(state, action) {
+      state.stage = Stages.Error
+      state.errorMessage = action.payload
     },
     reset(state) {
       state.stage = Stages.Uninitialized
-      state.identifier = null
+      state.localIdentifier = null
+      state.remoteIdentifier = null
+      state.isVideoEnabled = false
+      state.isAudioEnabled = false
+      state.errorMessage = null
     },
   },
 })
 
-export const { initialized, reset } = webrtcSlice.actions
+export const {
+  initialized,
+  callingStarted,
+  failed,
+  reset,
+} = webrtcSlice.actions
 
-export const selectIsStageUninitialized = (state) =>
+export const selectLocalIdentifier = (state) => state.webrtc.localIdentifier
+
+export const selectIsUninitialized = (state) =>
   state.webrtc.stage === Stages.Uninitialized
 
-export const selectIdentifier = (state) => state.webrtc.identifier
+export const selectIsCalling = (state) => state.webrtc.stage === Stages.Calling
+
+export const selectIsFormLocked = (state) =>
+  state.webrtc.stage === Stages.Uninitialized ||
+  state.webrtc.stage === Stages.Calling ||
+  state.webrtc.stage === Stages.Establishing
+
+export const selectFailed = (state) => state.webrtc.stage === Stages.Error
+
+export const selectErrorMessage = (state) => state.webrtc.errorMessage
 
 export default webrtcSlice.reducer

@@ -1,11 +1,16 @@
-import { IonApp } from '@ionic/react'
+import { IonAlert, IonApp } from '@ionic/react'
 import { useEffect } from 'react'
 // import CallSessionPage from "./pages/CallSessionPage";
 import HomePage from './pages/HomePage'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import client from './client'
-import { initialized, reset } from './features/webrtc/webrtcSlice'
+import {
+  initialized,
+  reset,
+  selectErrorMessage,
+  selectFailed,
+} from './features/webrtc/webrtcSlice'
 
 import '@ionic/react/css/core.css'
 import '@ionic/react/css/normalize.css'
@@ -21,6 +26,8 @@ import './theme/global.css'
 
 function App() {
   const dispatch = useDispatch()
+  const failed = useSelector((state) => selectFailed(state))
+  const errorMessage = useSelector((state) => selectErrorMessage(state))
 
   useEffect(() => {
     if (!dispatch) {
@@ -29,17 +36,19 @@ function App() {
 
     const onConnect = () => console.log('Socket connected')
     const onDisconnect = () => dispatch(reset())
-
     const onPeerId = (payload) => dispatch(initialized(payload))
+    const onCall = (payload) => console.log('on call', payload)
 
     client.on('connect', onConnect)
     client.on('disconnect', onDisconnect)
     client.on('peer-id', onPeerId)
+    client.on('call', onCall)
 
     return () => {
       client.off('connect', onConnect)
       client.off('disconnect', onDisconnect)
       client.off('peer-id', onPeerId)
+      client.off('call', onCall)
     }
   }, [dispatch])
 
@@ -47,6 +56,13 @@ function App() {
     <IonApp>
       <HomePage />
       {/* <CallSessionPage /> */}
+      <IonAlert
+        isOpen={failed}
+        onDidDismiss={() => dispatch(reset())}
+        header={'Error'}
+        message={errorMessage}
+        buttons={['OK']}
+      />
     </IonApp>
   )
 }

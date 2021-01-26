@@ -1,7 +1,11 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
-  selectIsStageUninitialized,
-  selectIdentifier,
+  selectIsFormLocked,
+  selectLocalIdentifier,
+  selectIsUninitialized,
+  selectIsCalling,
+  callingStarted,
+  failed,
 } from '../features/webrtc/webrtcSlice'
 import {
   IonButton,
@@ -15,15 +19,60 @@ import {
   IonIcon,
   IonAlert,
   IonSpinner,
+  IonToast,
 } from '@ionic/react'
 import { videocam, mic } from 'ionicons/icons'
 import Header from '../components/Header'
+import { useRef, useState } from 'react'
 
 function HomePage() {
-  const isStageUninitialized = useSelector((state) =>
-    selectIsStageUninitialized(state)
-  )
-  const identifier = useSelector((state) => selectIdentifier(state))
+  const dispatch = useDispatch()
+  const [showToast, setShowToast] = useState(false)
+  const isFormLocked = useSelector((state) => selectIsFormLocked(state))
+  const isUninitialized = useSelector((state) => selectIsUninitialized(state))
+  const isCalling = useSelector((state) => selectIsCalling(state))
+  const localIdentifier = useSelector((state) => selectLocalIdentifier(state))
+  const localIdentifierEl = useRef(null)
+  const [remoteIdentifier, setRemoteIdentifier] = useState('')
+
+  const onChangeRemoteIdentifier = (event) => {
+    setRemoteIdentifier(event.target.value)
+  }
+
+  const validateRemoteIdentifier = () => {
+    if (!remoteIdentifier || remoteIdentifier === localIdentifier) {
+      dispatch(failed('Invalid partner ID.'))
+      return false
+    }
+    return true
+  }
+
+  const onClickVideoCallButton = () => {
+    if (!validateRemoteIdentifier()) {
+      return
+    }
+    dispatch(callingStarted({ remoteIdentifier, isVideoEnabled: true }))
+  }
+
+  const onClickAudioCallButton = () => {
+    if (!validateRemoteIdentifier()) {
+      return
+    }
+    dispatch(callingStarted({ remoteIdentifier, isVideoEnabled: false }))
+  }
+
+  const onCopyYourIdText = async () => {
+    if (localIdentifierEl.current) {
+      const inputEl = await localIdentifierEl.current.getInputElement()
+      if (inputEl) {
+        inputEl.select()
+        document.execCommand('copy')
+        inputEl.setSelectionRange(0, 0)
+        setShowToast(true)
+      }
+    }
+  }
+
   return (
     <IonPage>
       <Header />
@@ -38,27 +87,41 @@ function HomePage() {
               <IonInput
                 type='text'
                 readonly
-                value={identifier || 'Loading...'}
-                disabled={isStageUninitialized}
+                value={localIdentifier || 'Loading...'}
+                disabled={isFormLocked}
+                ref={localIdentifierEl}
               />
-              {isStageUninitialized ? (
+              {isUninitialized ? (
                 <IonSpinner />
               ) : (
-                <IonButton>Copy</IonButton>
+                <IonButton onClick={onCopyYourIdText}>Copy</IonButton>
               )}
             </IonItem>
             <IonItem>
               <IonLabel position='fixed'>Partner ID:</IonLabel>
-              <IonInput type='text' placeholder='Type the partner ID' />
+              <IonInput
+                type='text'
+                placeholder='Type the partner ID'
+                value={remoteIdentifier}
+                onIonChange={onChangeRemoteIdentifier}
+                disabled={isFormLocked}
+              />
+              {isCalling && <IonSpinner />}
             </IonItem>
             <div
               className='ion-padding-top ion-justify-content-center'
               style={{ display: 'flex' }}
             >
-              <IonButton>
+              <IonButton
+                onClick={onClickVideoCallButton}
+                disabled={isFormLocked}
+              >
                 <IonIcon icon={videocam} />
               </IonButton>
-              <IonButton>
+              <IonButton
+                onClick={onClickAudioCallButton}
+                disabled={isFormLocked}
+              >
                 <IonIcon icon={mic} />
               </IonButton>
             </div>
@@ -73,6 +136,12 @@ function HomePage() {
             { text: 'Accept with audio only', role: 'audio' },
             { text: 'Decline it', role: 'decline' },
           ]}
+        />
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={'Copied to clipboard'}
+          duration={1000}
         />
       </IonContent>
     </IonPage>
