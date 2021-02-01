@@ -22,7 +22,8 @@ import {
 } from '@ionic/react'
 import { videocam, mic } from 'ionicons/icons'
 import Header from '../components/Header'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import socket from '../client'
 
 function HomePage() {
   const dispatch = useDispatch()
@@ -33,6 +34,20 @@ function HomePage() {
   const localIdentifier = useSelector((state) => selectLocalIdentifier(state))
   const localIdentifierEl = useRef(null)
   const [remoteIdentifier, setRemoteIdentifier] = useState('')
+
+  useEffect(() => {
+    if (!isUninitialized) {
+      return
+    }
+    setRemoteIdentifier('')
+  }, [isUninitialized])
+
+  useEffect(() => {
+    if (!isCalling) {
+      return
+    }
+    socket.emit('call', { peerId: remoteIdentifier })
+  }, [isCalling, remoteIdentifier])
 
   const onChangeRemoteIdentifier = (event) => {
     setRemoteIdentifier(event.target.value)

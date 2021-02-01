@@ -69,7 +69,7 @@ export const selectIsFormLocked = (state) =>
   state.webrtc.stage === Stages.Calling ||
   state.webrtc.stage === Stages.Establishing
 
-export const selectFailed = (state) => state.webrtc.stage === Stages.Error
+export const selectGotFailed = (state) => state.webrtc.stage === Stages.Error
 
 export const selectErrorMessage = (state) => state.webrtc.errorMessage
 

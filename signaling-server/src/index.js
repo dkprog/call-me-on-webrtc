@@ -33,6 +33,7 @@ function onHelo(socket, ack) {
   }
   socket.handshake.peerId = generatePeerID()
   ack(socket.handshake.peerId)
+  peerIds.set(socket.handshake.peerId, socket.id)
   console.log('Peer identified', {
     socketId: socket.id,
     peerId: socket.handshake.peerId,

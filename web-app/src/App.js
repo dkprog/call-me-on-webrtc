@@ -9,8 +9,9 @@ import {
   initialized,
   reset,
   selectErrorMessage,
-  selectFailed,
+  selectGotFailed,
   selectIsUninitialized,
+  failed,
 } from './features/webrtc/webrtcSlice'
 
 import '@ionic/react/css/core.css'
@@ -24,11 +25,12 @@ import '@ionic/react/css/text-transformation.css'
 import '@ionic/react/css/flex-utils.css'
 import '@ionic/react/css/display.css'
 import './theme/global.css'
+import socket from './client'
 
 function App() {
   const dispatch = useDispatch()
   const isUninitialized = useSelector((state) => selectIsUninitialized(state))
-  const failed = useSelector((state) => selectFailed(state))
+  const gotFailed = useSelector((state) => selectGotFailed(state))
   const errorMessage = useSelector((state) => selectErrorMessage(state))
 
   useEffect(() => {
@@ -38,10 +40,16 @@ function App() {
 
     const onConnect = () => console.log('Socket connected')
     const onDisconnect = () => dispatch(reset())
+    const onPeerNotFound = () => dispatch(failed('Peer not found.'))
+
+    socket.on('connect', onConnect)
+    socket.on('disconnect', onDisconnect)
+    socket.on('peer-not-found', onPeerNotFound)
 
     return () => {
       client.off('connect', onConnect)
       client.off('disconnect', onDisconnect)
+      client.off('peer-not-found', onPeerNotFound)
     }
   }, [dispatch])
 
@@ -62,7 +70,7 @@ function App() {
       <HomePage />
       {/* <CallSessionPage /> */}
       <IonAlert
-        isOpen={failed}
+        isOpen={gotFailed}
         onDidDismiss={() => dispatch(reset())}
         header={'Error'}
         message={errorMessage}
