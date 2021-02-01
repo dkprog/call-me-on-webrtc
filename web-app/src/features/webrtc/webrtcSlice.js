@@ -26,9 +26,13 @@ export const webrtcSlice = createSlice({
       state.localIdentifier = action.payload.localIdentifier
     },
     callingStarted(state, action) {
+      const { remoteIdentifier, isVideoEnabled } = action.payload
+      if (!remoteIdentifier) {
+        return
+      }
       state.stage = Stages.Calling
-      state.remoteIdentifier = action.payload.remoteIdentifier
-      state.isVideoEnabled = action.payload.isVideoEnabled
+      state.remoteIdentifier = remoteIdentifier
+      state.isVideoEnabled = isVideoEnabled
       state.isAudioEnabled = true
     },
     failed(state, action) {

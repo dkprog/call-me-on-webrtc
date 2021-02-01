@@ -5,7 +5,6 @@ import {
   selectIsUninitialized,
   selectIsCalling,
   callingStarted,
-  failed,
 } from '../features/webrtc/webrtcSlice'
 import {
   IonButton,
@@ -41,7 +40,6 @@ function HomePage() {
 
   const validateRemoteIdentifier = () => {
     if (!remoteIdentifier || remoteIdentifier === localIdentifier) {
-      dispatch(failed('Invalid partner ID.'))
       return false
     }
     return true
