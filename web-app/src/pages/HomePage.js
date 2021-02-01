@@ -5,6 +5,7 @@ import {
   selectIsUninitialized,
   selectIsCalling,
   callingStarted,
+  selectIsReceivingCall,
 } from '../features/webrtc/webrtcSlice'
 import {
   IonButton,
@@ -34,6 +35,7 @@ function HomePage() {
   const localIdentifier = useSelector((state) => selectLocalIdentifier(state))
   const localIdentifierEl = useRef(null)
   const [remoteIdentifier, setRemoteIdentifier] = useState('')
+  const isReceivingCall = useSelector((state) => selectIsReceivingCall(state))
 
   useEffect(() => {
     if (!isUninitialized) {
@@ -141,7 +143,7 @@ function HomePage() {
           </IonList>
         </div>
         <IonAlert
-          isOpen={false}
+          isOpen={isReceivingCall}
           header={'Incoming call'}
           message='There is a incoming call from <em>partner-102</em>'
           buttons={[

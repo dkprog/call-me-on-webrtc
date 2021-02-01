@@ -35,6 +35,14 @@ export const webrtcSlice = createSlice({
       state.isVideoEnabled = isVideoEnabled
       state.isAudioEnabled = true
     },
+    callReceived(state, action) {
+      const { peerId } = action.payload
+      if (!peerId) {
+        return
+      }
+      state.stage = Stages.Receiving
+      state.remoteIdentifier = peerId
+    },
     failed(state, action) {
       state.stage = Stages.Error
       state.errorMessage = action.payload
@@ -53,6 +61,7 @@ export const webrtcSlice = createSlice({
 export const {
   initialized,
   callingStarted,
+  callReceived,
   failed,
   reset,
 } = webrtcSlice.actions
@@ -63,6 +72,9 @@ export const selectIsUninitialized = (state) =>
   state.webrtc.stage === Stages.Uninitialized
 
 export const selectIsCalling = (state) => state.webrtc.stage === Stages.Calling
+
+export const selectIsReceivingCall = (state) =>
+  state.webrtc.stage === Stages.Receiving
 
 export const selectIsFormLocked = (state) =>
   state.webrtc.stage === Stages.Uninitialized ||

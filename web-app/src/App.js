@@ -12,6 +12,7 @@ import {
   selectGotFailed,
   selectIsUninitialized,
   failed,
+  callReceived,
 } from './features/webrtc/webrtcSlice'
 
 import '@ionic/react/css/core.css'
@@ -41,15 +42,19 @@ function App() {
     const onConnect = () => console.log('Socket connected')
     const onDisconnect = () => dispatch(reset())
     const onPeerNotFound = () => dispatch(failed('Peer not found.'))
+    const onCall = (payload) =>
+      dispatch(callReceived({ peerId: payload.peerId }))
 
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('peer-not-found', onPeerNotFound)
+    socket.on('call', onCall)
 
     return () => {
-      client.off('connect', onConnect)
-      client.off('disconnect', onDisconnect)
-      client.off('peer-not-found', onPeerNotFound)
+      socket.off('connect', onConnect)
+      socket.off('disconnect', onDisconnect)
+      socket.off('peer-not-found', onPeerNotFound)
+      socket.off('call', onCall)
     }
   }, [dispatch])
 
