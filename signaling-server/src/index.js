@@ -19,16 +19,24 @@ function main() {
 }
 
 function onConnect(socket) {
-  socket.handshake.peerId = generatePeerID()
-  peerIds.set(socket.handshake.peerId, socket.id)
-  socket.join(socket.handshake.peerId)
+  socket.on('helo', onHelo.bind(this, socket))
   socket.on('disconnect', onDisconnect.bind(this, socket))
   socket.on('call', onCall.bind(this, socket))
   console.log('Peer connected', {
     socketId: socket.id,
+  })
+}
+
+function onHelo(socket, ack) {
+  if (socket.handshake.peerId) {
+    peerIds.delete(socket.handshake.peerId)
+  }
+  socket.handshake.peerId = generatePeerID()
+  ack(socket.handshake.peerId)
+  console.log('Peer identified', {
+    socketId: socket.id,
     peerId: socket.handshake.peerId,
   })
-  socket.emit('peer-id', { localIdentifier: socket.handshake.peerId })
 }
 
 function generatePeerID() {
@@ -55,6 +63,9 @@ function onDisconnect(socket) {
 }
 
 function onCall(socket, payload) {
+  if (!socket.handshake.peerId) {
+    return
+  }
   if (!('peerId' in payload)) {
     return
   }

@@ -10,6 +10,7 @@ import {
   reset,
   selectErrorMessage,
   selectFailed,
+  selectIsUninitialized,
 } from './features/webrtc/webrtcSlice'
 
 import '@ionic/react/css/core.css'
@@ -26,6 +27,7 @@ import './theme/global.css'
 
 function App() {
   const dispatch = useDispatch()
+  const isUninitialized = useSelector((state) => selectIsUninitialized(state))
   const failed = useSelector((state) => selectFailed(state))
   const errorMessage = useSelector((state) => selectErrorMessage(state))
 
@@ -36,21 +38,24 @@ function App() {
 
     const onConnect = () => console.log('Socket connected')
     const onDisconnect = () => dispatch(reset())
-    const onPeerId = (payload) => dispatch(initialized(payload))
-    const onCall = (payload) => console.log('on call', payload)
-
-    client.on('connect', onConnect)
-    client.on('disconnect', onDisconnect)
-    client.on('peer-id', onPeerId)
-    client.on('call', onCall)
 
     return () => {
       client.off('connect', onConnect)
       client.off('disconnect', onDisconnect)
-      client.off('peer-id', onPeerId)
-      client.off('call', onCall)
     }
   }, [dispatch])
+
+  useEffect(() => {
+    if (!dispatch || !isUninitialized) {
+      return
+    }
+
+    client.emit('helo', (peerId) => {
+      if (peerId) {
+        dispatch(initialized({ localIdentifier: peerId }))
+      }
+    })
+  }, [dispatch, isUninitialized])
 
   return (
     <IonApp>
