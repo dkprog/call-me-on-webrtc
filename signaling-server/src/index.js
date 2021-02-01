@@ -74,6 +74,10 @@ function onCall(socket, payload) {
     return
   }
   const toSocketId = peerIds.get(payload.remotePeerId)
+  if (toSocketId === socket.id) {
+    server.to(socket.id).emit('peer-not-found', { peerId: payload.peerId })
+    return
+  }
   const fromPeerId = socket.handshake.peerId
   socket.to(toSocketId).emit('call', fromPeerId)
 }
